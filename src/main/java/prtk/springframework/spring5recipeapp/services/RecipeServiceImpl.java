@@ -2,6 +2,10 @@ package prtk.springframework.spring5recipeapp.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import prtk.springframework.spring5recipeapp.commands.RecipeCommand;
+import prtk.springframework.spring5recipeapp.converters.RecipeCommandToRecipe;
+import prtk.springframework.spring5recipeapp.converters.RecipeToRecipeCommand;
 import prtk.springframework.spring5recipeapp.domain.Recipe;
 import prtk.springframework.spring5recipeapp.repositories.RecipeRepository;
 
@@ -14,9 +18,13 @@ import java.util.Set;
 public class RecipeServiceImpl implements RecipeService{
 
     private final RecipeRepository recipeRepository;
+    private final RecipeCommandToRecipe recipeCommandToRecipe;
+    private final RecipeToRecipeCommand recipeToRecipeCommand;
 
-    public RecipeServiceImpl(RecipeRepository recipeRepository) {
+    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeCommandToRecipe recipeCommandToRecipe, RecipeToRecipeCommand recipeToRecipeCommand) {
         this.recipeRepository = recipeRepository;
+        this.recipeCommandToRecipe = recipeCommandToRecipe;
+        this.recipeToRecipeCommand = recipeToRecipeCommand;
     }
 
     @Override
@@ -35,5 +43,14 @@ public class RecipeServiceImpl implements RecipeService{
             throw new RuntimeException("Recipe not found by Id");
         }
         return recipeOptional.get();
+    }
+
+    @Override
+    @Transactional
+    public RecipeCommand saveRecipeCommand(RecipeCommand command) {
+        Recipe detachRecipe = recipeCommandToRecipe.convert(command);
+        Recipe savedRecipe = recipeRepository.save(detachRecipe);
+        log.debug("Saved RecipeId: " + savedRecipe.getId());
+        return recipeToRecipeCommand.convert(savedRecipe);
     }
 }

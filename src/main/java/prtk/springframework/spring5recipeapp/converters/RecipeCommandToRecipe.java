@@ -1,6 +1,7 @@
 package prtk.springframework.spring5recipeapp.converters;
 
 import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -8,6 +9,7 @@ import prtk.springframework.spring5recipeapp.commands.RecipeCommand;
 import prtk.springframework.spring5recipeapp.domain.Recipe;
 
 @Component
+@Slf4j
 public class RecipeCommandToRecipe implements Converter<RecipeCommand, Recipe> {
 
     private final CategoryCommandToCategory categoryConveter;
@@ -39,7 +41,11 @@ public class RecipeCommandToRecipe implements Converter<RecipeCommand, Recipe> {
         recipe.setServings(source.getServings());
         recipe.setSource(source.getSource());
         recipe.setUrl(source.getUrl());
-        recipe.setNotes(notesConverter.convert(source.getNotes()));
+        try {
+            recipe.setNotes(notesConverter.convert(source.getNotes()));
+        }catch(Exception e){
+            log.debug("Error at recipe " + e.getMessage());
+        }
 
         if (source.getCategories() != null && source.getCategories().size() > 0){
             source.getCategories()

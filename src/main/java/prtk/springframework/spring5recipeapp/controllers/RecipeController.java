@@ -10,7 +10,6 @@ import prtk.springframework.spring5recipeapp.services.RecipeService;
 
 @Slf4j
 @Controller
-@RequestMapping("/recipe")
 public class RecipeController {
 
     private final RecipeService recipeService;
@@ -19,36 +18,31 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    @GetMapping
-    @RequestMapping("/{id}/show")
+    @GetMapping("/recipe/{id}/show")
     public String showById(@PathVariable String id, Model model){
         model.addAttribute("recipe", recipeService.findById(new Long(id)));
         return "recipe/show";
     }
 
-    @GetMapping
-    @RequestMapping("/new")
+    @GetMapping("recipe/new")
     public String newRecipe(Model model){
         model.addAttribute("recipe", new RecipeCommand());
         return "recipe/recipeform";
     }
 
-    @GetMapping
-    @RequestMapping("/{id}/update")
+    @GetMapping("recipe/{id}/update")
     public String updateRecipe(@PathVariable String id, Model model){
         model.addAttribute("recipe", recipeService.findCommandById(Long.valueOf(id)));
         return "recipe/recipeform";
     }
 
-    @PostMapping
-    @RequestMapping
+    @PostMapping("recipe")
     public String saveOrUpdate(@ModelAttribute RecipeCommand command){
         RecipeCommand savedCommand = recipeService.saveRecipeCommand(command);
         return "redirect:/recipe/" + savedCommand.getId() + "/show";
     }
 
-    @GetMapping
-    @RequestMapping("/{id}/delete")
+    @GetMapping("recipe/{id}/delete")
     public String deleteById(@PathVariable String id){
         log.debug("Deleting id: " + id);
         recipeService.deleteById(new Long(id));

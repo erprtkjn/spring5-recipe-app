@@ -66,7 +66,7 @@
                                         <option th:each="difficultyValue : ${T(prtk.springframework.spring5recipeapp.domain.Difficulty).values()}"
                                                 th:value="${difficultyValue.name()}"
                                                 th:text="${difficultyValue.name()}"
-                                        </option>
+                                        >val</option>
                                     </select>
                                 </div>
                             </div>
@@ -89,7 +89,7 @@
                     <div class="card mb-3">
                         <div class="card-header bg-primary text-light">
                             <div class="row">
-                                <div class="col-md-11 ">
+                                <div class="col-md-10 ">
                                     <h1 class="card-subtitle">Ingredients</h1>
                                 </div>
                                 <div class="col-md-1">

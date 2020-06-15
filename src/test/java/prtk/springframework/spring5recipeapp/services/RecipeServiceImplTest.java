@@ -7,8 +7,10 @@ import org.mockito.MockitoAnnotations;
 import prtk.springframework.spring5recipeapp.converters.RecipeCommandToRecipe;
 import prtk.springframework.spring5recipeapp.converters.RecipeToRecipeCommand;
 import prtk.springframework.spring5recipeapp.domain.Recipe;
+import prtk.springframework.spring5recipeapp.exceptions.NotFoundException;
 import prtk.springframework.spring5recipeapp.repositories.RecipeRepository;
 
+import javax.swing.text.html.Option;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -64,6 +66,22 @@ class RecipeServiceImplTest {
     }
 
     @Test
+    public void getRecipeByIdTestNotFound() throws Exception{
+        Optional<Recipe> recipeOptional = Optional.empty();
+
+        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+
+        // when
+        NotFoundException notFoundException = assertThrows(
+                NotFoundException.class, () -> recipeService.findById(1L),
+                "Expected exception to throw an error. But it didn't"
+        );
+
+        // then
+        assertTrue(notFoundException.getMessage().contains("Recipe Not Found"));
+    }
+
+    @Test
     void testDeleteById() throws Exception {
         Long idToDelete = Long.valueOf(2L);
 
@@ -72,3 +90,4 @@ class RecipeServiceImplTest {
         verify(recipeRepository, times(1)).deleteById(anyLong());
     }
 }
+

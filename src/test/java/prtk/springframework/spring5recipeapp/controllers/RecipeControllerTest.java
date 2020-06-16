@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import prtk.springframework.spring5recipeapp.commands.RecipeCommand;
 import prtk.springframework.spring5recipeapp.domain.Recipe;
+import prtk.springframework.spring5recipeapp.exceptions.ControllerExceptionHandler;
 import prtk.springframework.spring5recipeapp.exceptions.NotFoundException;
 import prtk.springframework.spring5recipeapp.services.RecipeService;
 
@@ -33,7 +34,9 @@ public class RecipeControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         controller = new RecipeController(recipeService);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(new ControllerExceptionHandler())
+                .build();
     }
 
     @Test
